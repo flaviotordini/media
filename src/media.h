@@ -1,8 +1,6 @@
 #ifndef MEDIA_H
 #define MEDIA_H
 
-#include <QtAV>
-#include <QtAVWidgets>
 #include <QtWidgets>
 
 class Media : public QObject {
