@@ -12,8 +12,7 @@ QtAV::VideoRendererId rendererIdFor(const QString &name) {
                      {"gdi", QtAV::VideoRendererId_GDI},
                      {"xv", QtAV::VideoRendererId_XV},
                      {"x11", QtAV::VideoRendererId_X11},
-                     {"qt", QtAV::VideoRendererId_Widget},
-                     {nullptr, 0}};
+                     {"qt", QtAV::VideoRendererId_Widget}};
 
     for (int i = 0; renderers[i].name; ++i) {
         if (name == QLatin1String(renderers[i].name)) return renderers[i].id;
