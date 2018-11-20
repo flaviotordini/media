@@ -1,11 +1,10 @@
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
 
-QT += avwidgets
+HEADERS += $$PWD/src/media.h
 
-HEADERS += \
-    $$PWD/src/media.h \
-    $$PWD/src/mediaqtav.h
-
-SOURCES += \
-    $$PWD/src/mediaqtav.cpp
+contains(DEFINES, MEDIA_QTAV) {
+    QT += avwidgets
+    HEADERS += $$PWD/src/mediaqtav.h
+    SOURCES += $$PWD/src/mediaqtav.cpp
+}
