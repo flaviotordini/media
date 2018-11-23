@@ -2,6 +2,7 @@
 
 namespace {
 
+#ifndef MEDIA_AUDIOONLY
 QtAV::VideoRendererId rendererIdFor(const QString &name) {
     static const struct {
         const char *name;
@@ -24,6 +25,7 @@ QtAV::VideoRendererId rendererIdFor(const QString &name) {
     return QtAV::VideoRendererId_GLWidget2;
 #endif
 }
+#endif
 
 Media::State stateFor(QtAV::AVPlayer::State state) {
     static const QMap<QtAV::AVPlayer::State, Media::State> map{
@@ -38,9 +40,11 @@ Media::State stateFor(QtAV::AVPlayer::State state) {
 MediaQtAV::MediaQtAV(QObject *parent)
     : Media(parent), player1(nullptr), player2(nullptr), currentPlayer(nullptr) {}
 
+#ifndef MEDIA_AUDIOONLY
 void MediaQtAV::setRenderer(const QString &name) {
     rendererId = rendererIdFor(name);
 }
+#endif
 
 void MediaQtAV::setAudioOnly(bool value) {
     audioOnly = value;
@@ -51,9 +55,11 @@ void MediaQtAV::init() {
     setCurrentPlayer(player1);
 }
 
+#ifndef MEDIA_AUDIOONLY
 QWidget *MediaQtAV::videoWidget() const {
     return currentPlayer->renderer()->widget();
 }
+#endif
 
 Media::State MediaQtAV::state() const {
     if (currentPlayer->mediaStatus() == QtAV::LoadingMedia) return LoadingState;
@@ -68,6 +74,7 @@ void MediaQtAV::play(const QString &file) {
     clearQueue();
 }
 
+#ifndef MEDIA_AUDIOONLY
 void MediaQtAV::playSeparateAudioAndVideo(const QString &video, const QString &audio) {
     currentPlayer->play(video);
     currentPlayer->setExternalAudio(audio);
@@ -75,6 +82,7 @@ void MediaQtAV::playSeparateAudioAndVideo(const QString &video, const QString &a
     lastErrorString.clear();
     clearQueue();
 }
+#endif
 
 void MediaQtAV::play() {
     if (currentPlayer->isPaused())
@@ -197,6 +205,7 @@ void MediaQtAV::seek(qint64 ms) {
 
 QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
     QtAV::AVPlayer *p = new QtAV::AVPlayer();
+#ifndef MEDIA_AUDIOONLY
     if (!audioOnly) {
         QtAV::VideoRenderer *renderer = QtAV::VideoRenderer::create(rendererId);
         if (!renderer || !renderer->isAvailable() || !renderer->widget()) {
@@ -204,6 +213,7 @@ QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
         }
         p->setRenderer(renderer);
     }
+#endif
     p->setAsyncLoad(true);
     return p;
 }

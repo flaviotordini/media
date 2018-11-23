@@ -4,24 +4,27 @@
 #include "media.h"
 
 #include <QtAV>
+#ifndef MEDIA_AUDIOONLY
 #include <QtAVWidgets>
 #include <QtWidgets>
+#endif
 
 class MediaQtAV : public Media {
     Q_OBJECT
 
 public:
     MediaQtAV(QObject *parent = nullptr);
+#ifndef MEDIA_AUDIOONLY
     void setRenderer(const QString &name);
+    QWidget *videoWidget() const;
+    void playSeparateAudioAndVideo(const QString &video, const QString &audio);
+#endif
     void setAudioOnly(bool value);
     void init();
-
-    QWidget *videoWidget() const;
 
     Media::State state() const;
 
     void play(const QString &file);
-    void playSeparateAudioAndVideo(const QString &video, const QString &audio);
     void play();
     void pause();
     void stop();
@@ -62,7 +65,9 @@ private:
     bool aboutToFinishEmitted = false;
     QString lastErrorString;
 
+#ifndef MEDIA_AUDIOONLY
     QtAV::VideoRendererId rendererId = QtAV::VideoRendererId_GLWidget2;
+#endif
     bool audioOnly = false;
 };
 

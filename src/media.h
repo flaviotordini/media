@@ -1,7 +1,10 @@
 #ifndef MEDIA_H
 #define MEDIA_H
 
+#include <QtCore>
+#ifndef MEDIA_AUDIOONLY
 #include <QtWidgets>
+#endif
 
 class Media : public QObject {
     Q_OBJECT
@@ -18,16 +21,17 @@ public:
     Q_ENUM(State)
 
     Media(QObject *parent = nullptr) : QObject(parent) {}
-    virtual void setRenderer(const QString &name) = 0;
     virtual void setAudioOnly(bool value) = 0;
-    virtual void init() = 0;
-
+#ifndef MEDIA_AUDIOONLY
+    virtual void setRenderer(const QString &name) = 0;
     virtual QWidget *videoWidget() const = 0;
+    virtual void playSeparateAudioAndVideo(const QString &video, const QString &audio) = 0;
+#endif
+    virtual void init() = 0;
 
     virtual Media::State state() const = 0;
 
     virtual void play(const QString &file) = 0;
-    virtual void playSeparateAudioAndVideo(const QString &video, const QString &audio) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void stop() = 0;
