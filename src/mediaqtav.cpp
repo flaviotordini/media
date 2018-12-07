@@ -95,6 +95,10 @@ QString MediaQtAV::file() const {
     return currentPlayer->file();
 }
 
+void MediaQtAV::setBufferMilliseconds(qint64 value) {
+    currentPlayer->setBufferValue(value);
+}
+
 void MediaQtAV::enqueue(const QString &file) {
     queue << file;
     if (queue.size() == 1) {
@@ -152,7 +156,8 @@ QString MediaQtAV::errorString() const {
 }
 
 void MediaQtAV::checkAboutToFinish(qint64 position) {
-    if (!aboutToFinishEmitted && currentPlayer->isPlaying() && duration() - position < 5000) {
+    if (!aboutToFinishEmitted && currentPlayer->isPlaying() &&
+        duration() - position < currentPlayer->bufferValue()) {
         aboutToFinishEmitted = true;
         emit aboutToFinish();
     }
@@ -215,6 +220,7 @@ QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
     }
 #endif
     p->setAsyncLoad(true);
+    p->setBufferMode(QtAV::BufferTime);
     return p;
 }
 
@@ -245,6 +251,7 @@ void MediaQtAV::setCurrentPlayer(QtAV::AVPlayer *player) {
         currentPlayer->disconnect(this);
         player->audio()->setVolume(currentPlayer->audio()->volume());
         player->audio()->setMute(currentPlayer->audio()->isMute());
+        player->setBufferValue(currentPlayer->bufferValue());
     }
     currentPlayer = player;
     connectPlayer(currentPlayer);

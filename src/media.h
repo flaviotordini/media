@@ -38,6 +38,8 @@ public:
     virtual void seek(qint64 ms) = 0;
     virtual QString file() const = 0;
 
+    virtual void setBufferMilliseconds(qint64 value) = 0;
+
     virtual void enqueue(const QString &file) = 0;
     virtual void clearQueue() = 0;
     virtual bool hasQueue() const = 0;

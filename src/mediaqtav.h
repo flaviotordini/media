@@ -31,6 +31,8 @@ public:
     void seek(qint64 ms);
     QString file() const;
 
+    void setBufferMilliseconds(qint64 value);
+
     void enqueue(const QString &file);
     void clearQueue();
     bool hasQueue() const;
