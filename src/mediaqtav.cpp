@@ -222,6 +222,8 @@ QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
 #endif
 
     p->setBufferMode(QtAV::BufferTime);
+    if (currentPlayer) p->setBufferValue(currentPlayer->bufferValue());
+
     return p;
 }
 
