@@ -220,7 +220,7 @@ QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
         p->setRenderer(renderer);
     }
 #endif
-    p->setAsyncLoad(true);
+
     p->setBufferMode(QtAV::BufferTime);
     return p;
 }
