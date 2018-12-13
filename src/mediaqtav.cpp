@@ -196,6 +196,7 @@ void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
 
 void MediaQtAV::onAVError(const QtAV::AVError &e) {
     lastErrorString = e.string();
+    qDebug() << lastErrorString;
     emit error(lastErrorString);
 }
 
