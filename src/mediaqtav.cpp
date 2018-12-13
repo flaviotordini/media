@@ -209,7 +209,8 @@ void MediaQtAV::seek(qint64 ms) {
 }
 
 QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
-    QtAV::AVPlayer *p = new QtAV::AVPlayer();
+    QtAV::AVPlayer *p = new QtAV::AVPlayer(this);
+
 #ifndef MEDIA_AUDIOONLY
     if (!audioOnly) {
         QtAV::VideoRenderer *renderer = QtAV::VideoRenderer::create(rendererId);
