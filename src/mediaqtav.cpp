@@ -164,6 +164,8 @@ void MediaQtAV::checkAboutToFinish(qint64 position) {
 }
 
 void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
+    qDebug() << QVariant(status).toString();
+
     switch (status) {
     case QtAV::LoadingMedia:
         emit stateChanged(LoadingState);
@@ -187,7 +189,7 @@ void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
         }
         break;
     default:
-        qDebug() << status;
+        qDebug() << "Unhandled" << QVariant(status).toString();
     }
 }
 
