@@ -176,8 +176,9 @@ void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
         else {
             auto nextPlayer = currentPlayer == player1 ? player2 : player1;
             if (nextPlayer->isLoaded()) {
-                nextPlayer->play();
+                qDebug() << "Preloaded";
                 setCurrentPlayer(nextPlayer);
+                nextPlayer->play();
                 aboutToFinishEmitted = false;
                 lastErrorString.clear();
                 emit sourceChanged();
