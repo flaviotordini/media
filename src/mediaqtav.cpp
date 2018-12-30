@@ -82,6 +82,14 @@ void MediaQtAV::playSeparateAudioAndVideo(const QString &video, const QString &a
     lastErrorString.clear();
     clearQueue();
 }
+
+void MediaQtAV::snapshot() {
+    auto videoCapture = currentPlayer->videoCapture();
+    connect(videoCapture, &QtAV::VideoCapture::imageCaptured, this, &Media::snapshotReady);
+    connect(videoCapture, &QtAV::VideoCapture::failed, this,
+            [this] { emit snapshotReady(QImage()); });
+    videoCapture->capture();
+}
 #endif
 
 void MediaQtAV::play() {

@@ -18,6 +18,7 @@ public:
     void setRenderer(const QString &name);
     QWidget *videoWidget() const;
     void playSeparateAudioAndVideo(const QString &video, const QString &audio);
+    void snapshot();
 #endif
     void setAudioOnly(bool value);
     void init();

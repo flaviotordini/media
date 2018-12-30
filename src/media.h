@@ -26,6 +26,7 @@ public:
     virtual void setRenderer(const QString &name) = 0;
     virtual QWidget *videoWidget() const = 0;
     virtual void playSeparateAudioAndVideo(const QString &video, const QString &audio) = 0;
+    virtual void snapshot() = 0;
 #endif
     virtual void init() = 0;
 
@@ -70,6 +71,9 @@ signals:
     void finished();
     void volumeChanged(qreal value);
     void volumeMutedChanged(bool value);
+#ifndef MEDIA_AUDIOONLY
+    void snapshotReady(const QImage &image);
+#endif
 };
 
 #endif // MEDIA_H
