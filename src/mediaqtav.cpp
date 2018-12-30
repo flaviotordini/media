@@ -181,6 +181,12 @@ void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
     case QtAV::LoadingMedia:
         emit stateChanged(LoadingState);
         break;
+    case QtAV::BufferedMedia:
+        if (currentPlayer->state() == QtAV::AVPlayer::PlayingState) emit stateChanged(PlayingState);
+        break;
+    case QtAV::BufferingMedia:
+        emit stateChanged(BufferingState);
+        break;
     case QtAV::EndOfMedia:
         if (queue.isEmpty())
             emit finished();
@@ -256,8 +262,15 @@ void MediaQtAV::connectPlayer(QtAV::AVPlayer *player) {
     connect(player, &QtAV::AVPlayer::positionChanged, this, &Media::positionChanged);
     connect(player, &QtAV::AVPlayer::positionChanged, this, &MediaQtAV::checkAboutToFinish);
 
-    connect(player, &QtAV::AVPlayer::stateChanged, this,
-            [this](QtAV::AVPlayer::State state) { emit stateChanged(stateFor(state)); });
+    connect(player, &QtAV::AVPlayer::stateChanged, this, [this](QtAV::AVPlayer::State state) {
+        const State s = stateFor(state);
+        if (s != PlayingState) {
+            emit stateChanged(s);
+        } else if (currentPlayer->mediaStatus() == QtAV::BufferedMedia) {
+            // needed when resuming from pause
+            emit stateChanged(s);
+        }
+    });
     connect(player, &QtAV::AVPlayer::mediaStatusChanged, this, &MediaQtAV::onMediaStatusChange);
 
     connect(player->audio(), &QtAV::AudioOutput::volumeChanged, this, &Media::volumeChanged);
