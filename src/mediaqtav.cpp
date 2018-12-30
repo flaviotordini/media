@@ -51,6 +51,9 @@ void MediaQtAV::setAudioOnly(bool value) {
 }
 
 void MediaQtAV::init() {
+#ifndef MEDIA_AUDIOONLY
+    QtAV::Widgets::registerRenderers();
+#endif
     player1 = createPlayer(audioOnly);
     setCurrentPlayer(player1);
 }
