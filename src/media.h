@@ -40,6 +40,7 @@ public:
     virtual QString file() const = 0;
 
     virtual void setBufferMilliseconds(qint64 value) = 0;
+    virtual void setUserAgent(const QString &value) = 0;
 
     virtual void enqueue(const QString &file) = 0;
     virtual void clearQueue() = 0;

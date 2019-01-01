@@ -33,6 +33,7 @@ public:
     QString file() const;
 
     void setBufferMilliseconds(qint64 value);
+    void setUserAgent(const QString &value);
 
     void enqueue(const QString &file);
     void clearQueue();
