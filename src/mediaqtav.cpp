@@ -51,6 +51,10 @@ void MediaQtAV::setAudioOnly(bool value) {
 }
 
 void MediaQtAV::init() {
+#ifndef QT_NO_DEBUG_OUTPUT
+    QtAV::setLogLevel(QtAV::LogAll);
+#endif
+
 #ifndef MEDIA_AUDIOONLY
     QtAV::Widgets::registerRenderers();
 #endif
