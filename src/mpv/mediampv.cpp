@@ -108,10 +108,13 @@ void MediaMPV::onMpvEvents() {
 }
 
 void MediaMPV::checkAboutToFinish(qint64 position) {
-    if (!aboutToFinishEmitted && currentState == Media::PlayingState &&
-        duration() - position < 5000) {
-        aboutToFinishEmitted = true;
-        emit aboutToFinish();
+    if (!aboutToFinishEmitted && currentState == Media::PlayingState) {
+        const qint64 dur = duration();
+        if (dur > 0 && dur - position < 5000) {
+            aboutToFinishEmitted = true;
+            qDebug() << "aboutToFinish" << position << dur;
+            emit aboutToFinish();
+        }
     }
 }
 
@@ -153,7 +156,7 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
                 double seconds = *(double *)prop->data;
                 qint64 ms = seconds * 1000.;
                 emit positionChanged(ms);
-                // checkAboutToFinish(ms);
+                checkAboutToFinish(ms);
             } else if (prop->format == MPV_FORMAT_NONE) {
                 // The property is unavailable, which probably means playback was stopped.
                 emit positionChanged(0);
