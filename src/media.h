@@ -20,7 +20,9 @@ public:
     };
     Q_ENUM(State)
 
-    Media(QObject *parent = nullptr) : QObject(parent) {}
+    Media(QObject *parent = nullptr) : QObject(parent) {
+        qRegisterMetaType<Media::State>("Media::State");
+    }
     virtual void setAudioOnly(bool value) = 0;
 #ifndef MEDIA_AUDIOONLY
     virtual void setRenderer(const QString &name) = 0;
@@ -66,7 +68,7 @@ signals:
     void started();
     void stopped();
     void paused(bool p);
-    void stateChanged(State state);
+    void stateChanged(Media::State state);
     void positionChanged(qint64 ms);
     void aboutToFinish();
     void finished();
