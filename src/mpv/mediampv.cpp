@@ -129,9 +129,16 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         setState(Media::PlayingState);
         break;
 
-    case MPV_EVENT_END_FILE:
-        setState(Media::StoppedState);
+    case MPV_EVENT_END_FILE: {
+        struct mpv_event_end_file *eof_event = (struct mpv_event_end_file *)event->data;
+        if (eof_event->reason == MPV_END_FILE_REASON_EOF ||
+            eof_event->reason == MPV_END_FILE_REASON_ERROR) {
+            qDebug() << "Finished";
+            setState(Media::StoppedState);
+            emit finished();
+        }
         break;
+    }
 
     case MPV_EVENT_PAUSE:
         setState(Media::PausedState);
