@@ -70,7 +70,7 @@ private:
     QString lastErrorString;
 
 #ifndef MEDIA_AUDIOONLY
-    QtAV::VideoRendererId rendererId = QtAV::VideoRendererId_GLWidget2;
+    QtAV::VideoRendererId rendererId;
 #endif
     bool audioOnly = false;
 };

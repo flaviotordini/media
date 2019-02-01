@@ -2,6 +2,12 @@
 
 namespace {
 
+#if defined(Q_OS_ANDROID) || defined(Q_OS_MAC)
+const QtAV::VideoRendererId defaultRenderer = QtAV::VideoRendererId_OpenGLWidget;
+#else
+const QtAV::VideoRendererId defaultRenderer = QtAV::VideoRendererId_GLWidget2;
+#endif
+
 #ifndef MEDIA_AUDIOONLY
 QtAV::VideoRendererId rendererIdFor(const QString &name) {
     static const struct {
@@ -18,12 +24,8 @@ QtAV::VideoRendererId rendererIdFor(const QString &name) {
     for (int i = 0; renderers[i].name; ++i) {
         if (name == QLatin1String(renderers[i].name)) return renderers[i].id;
     }
-#ifndef QT_NO_OPENGL
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
-    return QtAV::VideoRendererId_OpenGLWidget;
-#endif
-    return QtAV::VideoRendererId_GLWidget2;
-#endif
+
+    return defaultRenderer;
 }
 #endif
 
@@ -38,7 +40,11 @@ Media::State stateFor(QtAV::AVPlayer::State state) {
 } // namespace
 
 MediaQtAV::MediaQtAV(QObject *parent)
-    : Media(parent), player1(nullptr), player2(nullptr), currentPlayer(nullptr) {}
+    : Media(parent), player1(nullptr), player2(nullptr), currentPlayer(nullptr) {
+#ifndef MEDIA_AUDIOONLY
+    rendererId = defaultRenderer;
+#endif
+}
 
 #ifndef MEDIA_AUDIOONLY
 void MediaQtAV::setRenderer(const QString &name) {
