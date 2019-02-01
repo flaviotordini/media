@@ -123,6 +123,7 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
     // qDebug() << event->data;
     switch (event->event_id) {
     case MPV_EVENT_START_FILE:
+        emit sourceChanged();
         setState(Media::LoadingState);
         break;
 
@@ -131,7 +132,6 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         break;
 
     case MPV_EVENT_FILE_LOADED:
-        emit sourceChanged();
         setState(Media::PlayingState);
         break;
 
