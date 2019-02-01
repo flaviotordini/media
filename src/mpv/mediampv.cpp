@@ -130,6 +130,10 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         break;
 
     case MPV_EVENT_FILE_LOADED:
+        emit sourceChanged();
+        setState(Media::PlayingState);
+        break;
+
     case MPV_EVENT_PLAYBACK_RESTART:
     case MPV_EVENT_UNPAUSE:
         setState(Media::PlayingState);
