@@ -234,6 +234,9 @@ void MediaQtAV::onMediaStatusChange(QtAV::MediaStatus status) {
             }
         }
         break;
+    case QtAV::InvalidMedia:
+        emit stateChanged(Media::ErrorState);
+        break;
     default:
         qDebug() << "Unhandled" << QVariant(status).toString();
     }
