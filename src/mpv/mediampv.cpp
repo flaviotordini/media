@@ -122,6 +122,9 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
     // qDebug() << event->data;
     switch (event->event_id) {
     case MPV_EVENT_START_FILE:
+        setState(Media::LoadingState);
+        break;
+
     case MPV_EVENT_SEEK:
         setState(Media::BufferingState);
         break;
