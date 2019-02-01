@@ -178,7 +178,7 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         else if (strcmp(prop->name, "mute") == 0) {
             if (prop->format == MPV_FORMAT_FLAG) {
                 int mute = *(int *)prop->data;
-                emit volumeMutedChanged(mute != 0);
+                emit volumeMutedChanged(mute == 0);
             }
         }
 
