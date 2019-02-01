@@ -265,11 +265,18 @@ QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
 
 #ifndef MEDIA_AUDIOONLY
     if (!audioOnly) {
-        QtAV::VideoRenderer *renderer = QtAV::VideoRenderer::create(rendererId);
-        if (!renderer || !renderer->isAvailable() || !renderer->widget()) {
-            qFatal("No QtAV video renderer");
+        if (currentPlayer) {
+            p->setRenderer(currentPlayer->renderer());
+            p->setVideoDecoderPriority(currentPlayer->videoDecoderPriority());
+        } else {
+            QtAV::VideoRenderer *renderer = QtAV::VideoRenderer::create(rendererId);
+            if (!renderer || !renderer->isAvailable() || !renderer->widget()) {
+                qFatal("No QtAV video renderer");
+            }
+            p->setRenderer(renderer);
+            p->setVideoDecoderPriority(
+                    {"CUDA", "D3D11", "DXVA", "VAAPI", "VideoToolbox", "FFmpeg"});
         }
-        p->setRenderer(renderer);
     }
 #endif
 
