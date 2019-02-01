@@ -50,7 +50,8 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_option_string(mpv, "quiet", "yes");
     mpv_set_option_string(mpv, "softvol", "yes");
     mpv_set_option_string(mpv, "load-scripts", "no");
-    mpv_set_option_string(mpv, "audio-client-name", QCoreApplication::applicationName().toUtf8());
+    mpv_set_option_string(mpv, "audio-client-name",
+                          QCoreApplication::applicationName().toUtf8().data());
     mpv_set_option_string(mpv, "hwdec", "auto");
 
 #if defined Q_OS_UNIX && !defined Q_OS_DARWIN
