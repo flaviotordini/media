@@ -38,7 +38,7 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
 
     mpv_set_option_string(mpv, "config", "no");
     mpv_set_option_string(mpv, "audio-display", "no");
-    mpv_set_option_string(mpv, "gapless-audio", "yes");
+    mpv_set_option_string(mpv, "gapless-audio", "weak");
     mpv_set_option_string(mpv, "idle", "yes");
     mpv_set_option_string(mpv, "input-default-bindings", "no");
     mpv_set_option_string(mpv, "input-vo-keyboard", "no");
