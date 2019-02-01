@@ -160,9 +160,6 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
                 qint64 ms = seconds * 1000.;
                 emit positionChanged(ms);
                 checkAboutToFinish(ms);
-            } else if (prop->format == MPV_FORMAT_NONE) {
-                // The property is unavailable, which probably means playback was stopped.
-                emit positionChanged(0);
             }
         }
 
