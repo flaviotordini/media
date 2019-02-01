@@ -24,7 +24,7 @@ public:
     virtual void setAudioOnly(bool value) = 0;
 #ifndef MEDIA_AUDIOONLY
     virtual void setRenderer(const QString &name) = 0;
-    virtual QWidget *videoWidget() const = 0;
+    virtual QWidget *videoWidget() = 0;
     virtual void playSeparateAudioAndVideo(const QString &video, const QString &audio) = 0;
     virtual void snapshot() = 0;
 #endif

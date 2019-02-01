@@ -63,7 +63,7 @@ void MediaQtAV::init() {
 }
 
 #ifndef MEDIA_AUDIOONLY
-QWidget *MediaQtAV::videoWidget() const {
+QWidget *MediaQtAV::videoWidget() {
     return currentPlayer->renderer()->widget();
 }
 #endif

@@ -16,7 +16,7 @@ public:
     MediaQtAV(QObject *parent = nullptr);
 #ifndef MEDIA_AUDIOONLY
     void setRenderer(const QString &name);
-    QWidget *videoWidget() const;
+    QWidget *videoWidget();
     void playSeparateAudioAndVideo(const QString &video, const QString &audio);
     void snapshot();
 #endif
