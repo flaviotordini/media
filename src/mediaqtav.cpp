@@ -76,7 +76,7 @@ QWidget *MediaQtAV::videoWidget() {
 
 Media::State MediaQtAV::state() const {
     if (currentPlayer->mediaStatus() == QtAV::LoadingMedia) return LoadingState;
-    if (currentPlayer->bufferProgress() < 1.) return BufferingState;
+    if (currentPlayer->bufferProgress() > 0. && currentPlayer->bufferProgress() < 1.)
         return BufferingState;
     return stateFor(currentPlayer->state());
 }
