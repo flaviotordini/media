@@ -77,10 +77,19 @@ QWidget *MediaQtAV::videoWidget() {
 Media::State MediaQtAV::state() const {
     if (currentPlayer->mediaStatus() == QtAV::LoadingMedia) return LoadingState;
     if (currentPlayer->bufferProgress() < 1.) return BufferingState;
+        return BufferingState;
     return stateFor(currentPlayer->state());
 }
 
 void MediaQtAV::play(const QString &file) {
+    if (currentPlayer->isPlaying()) {
+        smoothSourceChange(file, QString());
+        return;
+    }
+
+#ifndef MEDIA_AUDIOONLY
+    if (!currentPlayer->externalAudio().isEmpty()) currentPlayer->setExternalAudio(QString());
+#endif
     currentPlayer->play(file);
     aboutToFinishEmitted = false;
     lastErrorString.clear();
@@ -89,8 +98,13 @@ void MediaQtAV::play(const QString &file) {
 
 #ifndef MEDIA_AUDIOONLY
 void MediaQtAV::playSeparateAudioAndVideo(const QString &video, const QString &audio) {
-    currentPlayer->play(video);
+    if (currentPlayer->isPlaying()) {
+        smoothSourceChange(video, audio);
+        return;
+    }
+    currentPlayer->stop();
     currentPlayer->setExternalAudio(audio);
+    currentPlayer->play(video);
     aboutToFinishEmitted = false;
     lastErrorString.clear();
     clearQueue();
@@ -300,4 +314,39 @@ void MediaQtAV::setCurrentPlayer(QtAV::AVPlayer *player) {
     }
     currentPlayer = player;
     connectPlayer(currentPlayer);
+}
+
+void MediaQtAV::smoothSourceChange(const QString &file, const QString &externalAudio) {
+    qDebug() << "smoothSourceChange";
+    auto nextPlayer = player1;
+    if (currentPlayer == player1) {
+        if (player2 == nullptr) player2 = createPlayer(audioOnly);
+        nextPlayer = player2;
+    }
+    QObject *context = new QObject();
+    connect(nextPlayer, &QtAV::AVPlayer::loaded, context, [this, nextPlayer, context] {
+        qDebug() << "smoothSourceChange preloaded";
+        setCurrentPlayer(nextPlayer);
+
+        aboutToFinishEmitted = false;
+        lastErrorString.clear();
+        clearQueue();
+        emit sourceChanged();
+        context->deleteLater();
+
+        QObject *context2 = new QObject();
+        connect(nextPlayer, &QtAV::AVPlayer::mediaStatusChanged, context2,
+                [this, context2](QtAV::MediaStatus mediaStatus) {
+                    if (mediaStatus == QtAV::BufferedMedia) {
+                        qDebug() << "smoothSourceChange playing";
+                        auto oldPlayer = currentPlayer == player1 ? player2 : player1;
+                        oldPlayer->stop();
+                        context2->deleteLater();
+                    }
+                });
+        currentPlayer->play();
+    });
+    nextPlayer->setExternalAudio(externalAudio);
+    nextPlayer->setFile(file);
+    nextPlayer->load();
 }

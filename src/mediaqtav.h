@@ -60,6 +60,7 @@ private:
     QtAV::AVPlayer *createPlayer(bool audioOnly);
     void connectPlayer(QtAV::AVPlayer *player);
     void setCurrentPlayer(QtAV::AVPlayer *player);
+    void smoothSourceChange(const QString &file, const QString &externalAudio);
 
     QtAV::AVPlayer *player1;
     QtAV::AVPlayer *player2;
