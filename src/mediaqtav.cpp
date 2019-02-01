@@ -135,7 +135,10 @@ void MediaQtAV::setBufferMilliseconds(qint64 value) {
 }
 
 void MediaQtAV::setUserAgent(const QString &value) {
-    currentPlayer->setOptionsForFormat({{"user_agent", value}});
+    qDebug() << "Setting user agent to" << value;
+    auto options = currentPlayer->optionsForFormat();
+    options.insert(QStringLiteral("user_agent"), value);
+    currentPlayer->setOptionsForFormat(options);
 }
 
 void MediaQtAV::enqueue(const QString &file) {
