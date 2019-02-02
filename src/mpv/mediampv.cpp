@@ -339,13 +339,13 @@ qint64 MediaMPV::remainingTime() const {
 
 qreal MediaMPV::volume() const {
     double vol;
-    mpv_get_property(mpv, "ao-volume", MPV_FORMAT_DOUBLE, &vol);
+    mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
     return vol / 100.;
 }
 
 void MediaMPV::setVolume(qreal value) {
     double percent = value * 100.;
-    mpv_set_property_async(mpv, 0, "ao-volume", MPV_FORMAT_DOUBLE, &percent);
+    mpv_set_property_async(mpv, 0, "volume", MPV_FORMAT_DOUBLE, &percent);
 }
 
 bool MediaMPV::volumeMuted() const {
