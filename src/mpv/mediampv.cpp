@@ -48,20 +48,10 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_option_string(mpv, "fs", "no");
     mpv_set_option_string(mpv, "osd-level", "0");
     mpv_set_option_string(mpv, "quiet", "yes");
-    mpv_set_option_string(mpv, "softvol", "yes");
     mpv_set_option_string(mpv, "load-scripts", "no");
     mpv_set_option_string(mpv, "audio-client-name",
                           QCoreApplication::applicationName().toUtf8().data());
     mpv_set_option_string(mpv, "hwdec", "auto");
-
-#if defined Q_OS_UNIX && !defined Q_OS_DARWIN
-    // mpv_set_option_string(mpv, "gpu-context", "x11egl");
-    // mpv_set_option_string(mpv, "gpu-hwdec-interop", "vaapi-egl");
-#else
-    // mpv_set_option_string(mpv, "opengl-early-flush", "no");
-    // mpv_set_option_string(mpv, "cocoa-force-dedicated-gpu", "yes");
-    // mpv_set_option_string(mpv, "native-fs", "no");
-#endif
 
 #ifndef MEDIA_AUDIOONLY
     mpv_set_option_string(mpv, "vo", "libmpv");
