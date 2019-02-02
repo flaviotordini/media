@@ -168,7 +168,8 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         else if (strcmp(prop->name, "mute") == 0) {
             if (prop->format == MPV_FORMAT_FLAG) {
                 int mute = *(int *)prop->data;
-                emit volumeMutedChanged(mute == 0);
+                qDebug() << "mute event" << mute;
+                emit volumeMutedChanged(mute == 1);
             }
         }
 
@@ -351,7 +352,7 @@ bool MediaMPV::volumeMuted() const {
     int mute;
     mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
     qDebug() << "mute is" << mute;
-    return mute != 0;
+    return mute == 1;
 }
 
 void MediaMPV::setVolumeMuted(bool value) {
