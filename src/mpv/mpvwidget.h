@@ -28,7 +28,7 @@ private:
     static void onUpdate(void *ctx);
 
     mpv_handle *mpv;
-    mpv_render_context *mpv_gl;
+    mpv_render_context *mpvContext;
     int glWidth;
     int glHeight;
 };

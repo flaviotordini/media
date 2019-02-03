@@ -13,21 +13,18 @@ static void *get_proc_address(void *ctx, const char *name) {
 }
 
 MpvWidget::MpvWidget(mpv_handle *mpv, QWidget *parent, Qt::WindowFlags f)
-    : QOpenGLWidget(parent, f), mpv(mpv), mpv_gl(nullptr) {
-    // moveToThread(qApp->thread());
-    // setUpdateBehavior(QOpenGLWidget::PartialUpdate);
-    // setAttribute(Qt::WA_NativeWindow);
-    // hide();
+    : QOpenGLWidget(parent, f), mpv(mpv), mpvContext(nullptr) {
+    moveToThread(qApp->thread());
 }
 
 MpvWidget::~MpvWidget() {
     makeCurrent();
-    if (mpv_gl) mpv_render_context_free(mpv_gl);
+    if (mpvContext) mpv_render_context_free(mpvContext);
     mpv_terminate_destroy(mpv);
 }
 
 void MpvWidget::initializeGL() {
-    if (mpv_gl) qFatal("Already initialized");
+    if (mpvContext) qFatal("Already initialized");
 
     QWidget *nativeParent = nativeParentWidget();
     qDebug() << "initializeGL" << nativeParent;
@@ -50,26 +47,14 @@ void MpvWidget::initializeGL() {
     }
 #endif
 
-    if (mpv_render_context_create(&mpv_gl, mpv, params) < 0)
+    if (mpv_render_context_create(&mpvContext, mpv, params) < 0)
         qFatal("failed to initialize mpv GL context");
-    mpv_render_context_set_update_callback(mpv_gl, MpvWidget::onUpdate, (void *)this);
+    mpv_render_context_set_update_callback(mpvContext, MpvWidget::onUpdate, (void *)this);
 
     connect(this, &QOpenGLWidget::frameSwapped, this, &MpvWidget::onFrameSwapped);
-
-    /*
-    connect(this, &QOpenGLWidget::aboutToResize, this, [this] {
-        qDebug() << "aboutToResize";
-        setUpdatesEnabled(false);
-    });
-    connect(this, &QOpenGLWidget::resized, this, [this] {
-        qDebug() << "resized";
-        setUpdatesEnabled(true);
-    });
-    */
 }
 
 void MpvWidget::resizeGL(int w, int h) {
-    // makeCurrent();
     qreal r = devicePixelRatioF();
     glWidth = int(w * r);
     glHeight = int(h * r);
@@ -84,7 +69,7 @@ void MpvWidget::paintGL() {
                                  {MPV_RENDER_PARAM_INVALID, nullptr}};
     // See render_gl.h on what OpenGL environment mpv expects, and
     // other API details.
-    mpv_render_context_render(mpv_gl, params);
+    mpv_render_context_render(mpvContext, params);
 }
 
 // Make Qt invoke mpv_opengl_cb_draw() to draw a new/updated video frame.
@@ -96,22 +81,20 @@ void MpvWidget::maybeUpdate() {
     // Note: Qt doesn't seem to provide a way to query whether update() will
     //       be skipped, and the following code still fails when e.g. switching
     //       to a different workspace with a reparenting window manager.
-    QWidget *w = window();
-    if (!w->updatesEnabled() || w->isHidden() || w->isMinimized() || isHidden() ||
-        !updatesEnabled()) {
+    if (!updatesEnabled() || isHidden() || window()->isHidden() || window()->isMinimized()) {
         makeCurrent();
         paintGL();
         QOpenGLContext *c = context();
         c->swapBuffers(c->surface());
         doneCurrent();
-        mpv_render_context_report_swap(mpv_gl);
+        mpv_render_context_report_swap(mpvContext);
     } else {
         update();
     }
 }
 
 void MpvWidget::onFrameSwapped() {
-    mpv_render_context_report_swap(mpv_gl);
+    mpv_render_context_report_swap(mpvContext);
 }
 
 void MpvWidget::onUpdate(void *ctx) {
