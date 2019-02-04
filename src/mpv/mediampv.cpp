@@ -59,8 +59,8 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
 
 #ifdef MEDIA_MPV_WID
     widget = new QWidget();
-    // widget->setAttribute(Qt::WA_DontCreateNativeAncestors);
-    // widget->setAttribute(Qt::WA_NativeWindow);
+    widget->setAttribute(Qt::WA_DontCreateNativeAncestors);
+    widget->setAttribute(Qt::WA_NativeWindow);
     // If you have a HWND, use: int64_t wid = (intptr_t)hwnd;
     int64_t wid = (intptr_t)widget->winId();
     mpv_set_option(mpv, "wid", MPV_FORMAT_INT64, &wid);
