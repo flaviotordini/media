@@ -52,10 +52,7 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_option_string(mpv, "audio-client-name",
                           QCoreApplication::applicationName().toUtf8().data());
     mpv_set_option_string(mpv, "hwdec", "auto");
-
-#ifndef MEDIA_AUDIOONLY
     mpv_set_option_string(mpv, "vo", "libmpv");
-#endif
 
 #ifdef MEDIA_MPV_WID
     widget = new QWidget();
