@@ -54,6 +54,10 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_option_string(mpv, "hwdec", "auto");
     mpv_set_option_string(mpv, "vo", "libmpv");
 
+    mpv_set_option_string(mpv, "cache", "no");
+    mpv_set_option_string(mpv, "demuxer-max-bytes", "10485760");
+    mpv_set_option_string(mpv, "demuxer-max-back-bytes", "10485760");
+
 #ifdef MEDIA_MPV_WID
     widget = new QWidget();
     widget->setAttribute(Qt::WA_DontCreateNativeAncestors);
