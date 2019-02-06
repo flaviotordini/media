@@ -252,16 +252,16 @@ void MediaMPV::playSeparateAudioAndVideo(const QString &video, const QString &au
 void MediaMPV::snapshot() {
     if (this->state() != State::StoppedState && mpv != nullptr) {
         const QVariantList args = {"screenshot-raw", "video"};
-        mpv::qt::node_builder node(args);
-        mpv_node res;
-        const int ret = mpv_command_node(mpv, node.node(), &res);
+        mpv::qt::node_builder nodeBuilder(args);
+        mpv_node node;
+        const int ret = mpv_command_node(mpv, nodeBuilder.node(), &node);
         if (ret < 0) {
             emit error("Cannot take snapshot");
             return;
         }
 
-        mpv::qt::node_autofree auto_free(&res);
-        if (res.format != MPV_FORMAT_NODE_MAP) {
+        mpv::qt::node_autofree auto_free(&node);
+        if (node.format != MPV_FORMAT_NODE_MAP) {
             emit error("Cannot take snapshot");
             return;
         }
@@ -269,7 +269,7 @@ void MediaMPV::snapshot() {
         int width = 0;
         int height = 0;
         int stride = 0;
-        mpv_node_list *list = res.u.list;
+        mpv_node_list *list = node.u.list;
         uchar *data = nullptr;
 
         for (int i = 0; i < list->num; ++i) {
