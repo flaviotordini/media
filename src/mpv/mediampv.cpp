@@ -224,7 +224,9 @@ void MediaMPV::setAudioOnly(bool value) {
 
 #ifndef MEDIA_AUDIOONLY
 
-void MediaMPV::setRenderer(const QString &name) {}
+void MediaMPV::setRenderer(const QString &name) {
+    mpv_set_option_string(mpv, "vo", name.toUtf8().data());
+}
 
 QWidget *MediaMPV::videoWidget() {
     if (!widget) {
