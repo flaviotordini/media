@@ -240,6 +240,8 @@ void MediaMPV::playSeparateAudioAndVideo(const QString &video, const QString &au
     const char *args[] = {"loadfile", fileUtf8.constData(), nullptr};
     sendCommand(args);
 
+    qApp->processEvents();
+
     const QByteArray audioUtf8 = audio.toUtf8();
     const char *args2[] = {"audio-add", audioUtf8.constData(), nullptr};
     sendCommand(args2);
