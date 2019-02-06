@@ -249,7 +249,49 @@ void MediaMPV::playSeparateAudioAndVideo(const QString &video, const QString &au
     clearTrackState();
 }
 
-void MediaMPV::snapshot() {}
+void MediaMPV::snapshot() {
+    if (this->state() != State::StoppedState && mpv != nullptr) {
+        const QVariantList args = {"screenshot-raw", "video"};
+        mpv::qt::node_builder node(args);
+        mpv_node res;
+        const int ret = mpv_command_node(mpv, node.node(), &res);
+        if (ret < 0) {
+            emit error("Cannot take snapshot");
+            return;
+        }
+
+        mpv::qt::node_autofree auto_free(&res);
+        if (res.format != MPV_FORMAT_NODE_MAP) {
+            emit error("Cannot take snapshot");
+            return;
+        }
+
+        int width = 0;
+        int height = 0;
+        int stride = 0;
+        mpv_node_list *list = res.u.list;
+        uchar *data = nullptr;
+
+        for (int i = 0; i < list->num; ++i) {
+            const char *key = list->keys[i];
+            if (strcmp(key, "w") == 0) {
+                width = static_cast<int>(list->values[i].u.int64);
+            } else if (strcmp(key, "h") == 0) {
+                height = static_cast<int>(list->values[i].u.int64);
+            } else if (strcmp(key, "stride") == 0) {
+                stride = static_cast<int>(list->values[i].u.int64);
+            } else if (strcmp(key, "data") == 0) {
+                data = static_cast<uchar *>(list->values[i].u.ba->data);
+            }
+        }
+
+        if (data != nullptr) {
+            QImage img = QImage(data, width, height, stride, QImage::Format_RGB32);
+            img.bits();
+            emit snapshotReady(img);
+        }
+    }
+}
 
 #endif
 
