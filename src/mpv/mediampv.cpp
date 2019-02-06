@@ -218,7 +218,9 @@ void MediaMPV::clearTrackState() {
     if (currentState == Media::PausedState) play();
 }
 
-void MediaMPV::setAudioOnly(bool value) {}
+void MediaMPV::setAudioOnly(bool value) {
+    Q_UNUSED(value);
+}
 
 #ifndef MEDIA_AUDIOONLY
 
