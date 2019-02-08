@@ -7,8 +7,6 @@
 #include "mpvwidget.h"
 #endif
 
-// TODO: screenshot
-
 namespace {
 void wakeup(void *ctx) {
     // This callback is invoked from any mpv thread (but possibly also
@@ -250,46 +248,46 @@ void MediaMPV::playSeparateAudioAndVideo(const QString &video, const QString &au
 }
 
 void MediaMPV::snapshot() {
-    if (this->state() != State::StoppedState && mpv != nullptr) {
-        const QVariantList args = {"screenshot-raw", "video"};
-        mpv::qt::node_builder nodeBuilder(args);
-        mpv_node node;
-        const int ret = mpv_command_node(mpv, nodeBuilder.node(), &node);
-        if (ret < 0) {
-            emit error("Cannot take snapshot");
-            return;
-        }
+    if (currentState == State::StoppedState) return;
 
-        mpv::qt::node_autofree auto_free(&node);
-        if (node.format != MPV_FORMAT_NODE_MAP) {
-            emit error("Cannot take snapshot");
-            return;
-        }
+    const QVariantList args = {"screenshot-raw", "video"};
+    mpv::qt::node_builder nodeBuilder(args);
+    mpv_node node;
+    const int ret = mpv_command_node(mpv, nodeBuilder.node(), &node);
+    if (ret < 0) {
+        emit error("Cannot take snapshot");
+        return;
+    }
 
-        int width = 0;
-        int height = 0;
-        int stride = 0;
-        mpv_node_list *list = node.u.list;
-        uchar *data = nullptr;
+    mpv::qt::node_autofree auto_free(&node);
+    if (node.format != MPV_FORMAT_NODE_MAP) {
+        emit error("Cannot take snapshot");
+        return;
+    }
 
-        for (int i = 0; i < list->num; ++i) {
-            const char *key = list->keys[i];
-            if (strcmp(key, "w") == 0) {
-                width = static_cast<int>(list->values[i].u.int64);
-            } else if (strcmp(key, "h") == 0) {
-                height = static_cast<int>(list->values[i].u.int64);
-            } else if (strcmp(key, "stride") == 0) {
-                stride = static_cast<int>(list->values[i].u.int64);
-            } else if (strcmp(key, "data") == 0) {
-                data = static_cast<uchar *>(list->values[i].u.ba->data);
-            }
-        }
+    int width = 0;
+    int height = 0;
+    int stride = 0;
+    mpv_node_list *list = node.u.list;
+    uchar *data = nullptr;
 
-        if (data != nullptr) {
-            QImage img = QImage(data, width, height, stride, QImage::Format_RGB32);
-            img.bits();
-            emit snapshotReady(img);
+    for (int i = 0; i < list->num; ++i) {
+        const char *key = list->keys[i];
+        if (strcmp(key, "w") == 0) {
+            width = static_cast<int>(list->values[i].u.int64);
+        } else if (strcmp(key, "h") == 0) {
+            height = static_cast<int>(list->values[i].u.int64);
+        } else if (strcmp(key, "stride") == 0) {
+            stride = static_cast<int>(list->values[i].u.int64);
+        } else if (strcmp(key, "data") == 0) {
+            data = static_cast<uchar *>(list->values[i].u.ba->data);
         }
+    }
+
+    if (data != nullptr) {
+        QImage img = QImage(data, width, height, stride, QImage::Format_RGB32);
+        img.bits();
+        emit snapshotReady(img);
     }
 }
 
