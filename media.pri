@@ -20,8 +20,8 @@ contains(DEFINES, MEDIA_MPV) {
     LIBS += -lmpv
 mac {
     # useful for homebrew: brew install mpv
-    LIBS += -L/usr/local/lib
-    INCLUDEPATH += /usr/local/include
+    # LIBS += -L/usr/local/lib
+    # INCLUDEPATH += /usr/local/include
 }
 
     INCLUDEPATH += $$PWD/src/mpv
