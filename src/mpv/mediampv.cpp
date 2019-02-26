@@ -65,13 +65,6 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_option(mpv, "wid", MPV_FORMAT_INT64, &wid);
 #endif
 
-    // Let us receive property change events with MPV_EVENT_PROPERTY_CHANGE if
-    // this property changes.
-    mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpv, 0, "volume", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpv, 0, "mute", MPV_FORMAT_FLAG);
-
 #ifndef QT_NO_DEBUG_OUTPUT
     // Request log messages
     // They are received as MPV_EVENT_LOG_MESSAGE.
@@ -85,6 +78,13 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_set_wakeup_callback(mpv, wakeup, this);
 
     if (mpv_initialize(mpv) < 0) qFatal("mpv failed to initialize");
+
+    // Let us receive property change events with MPV_EVENT_PROPERTY_CHANGE if
+    // this property changes.
+    mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpv, 0, "volume", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpv, 0, "mute", MPV_FORMAT_FLAG);
 }
 
 // This slot is invoked by wakeup() (through the mpvEvents signal).
