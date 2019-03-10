@@ -12,10 +12,7 @@ contains(DEFINES, MEDIA_QTAV) {
 }
 
 contains(DEFINES, MEDIA_MPV) {
-    QT *= gui widgets
-    unix:!mac {
-        QT *= x11extras
-    }
+    QT *= gui
 
     LIBS += -lmpv
 mac {
@@ -30,6 +27,10 @@ mac {
     SOURCES += $$PWD/src/mpv/mediampv.cpp
 
     !contains(DEFINES, MEDIA_AUDIOONLY) {
+        QT *= widgets
+        unix:!mac {
+            QT *= x11extras
+        }
         HEADERS += $$PWD/src/mpv/mpvwidget.h
         SOURCES += $$PWD/src/mpv/mpvwidget.cpp
     }
