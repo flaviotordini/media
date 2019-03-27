@@ -112,6 +112,7 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
     // qDebug() << event->data;
     switch (event->event_id) {
     case MPV_EVENT_START_FILE:
+        clearTrackState();
         emit sourceChanged();
         setState(Media::LoadingState);
         break;
@@ -212,8 +213,6 @@ void MediaMPV::setState(Media::State value) {
 void MediaMPV::clearTrackState() {
     lastErrorString.clear();
     aboutToFinishEmitted = false;
-
-    if (currentState == Media::PausedState) play();
 }
 
 void MediaMPV::setAudioOnly(bool value) {
@@ -305,6 +304,7 @@ void MediaMPV::play(const QString &file) {
     sendCommand(args);
 
     clearTrackState();
+    if (currentState == Media::PausedState) play();
 }
 
 void MediaMPV::play() {
