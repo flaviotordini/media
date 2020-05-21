@@ -1,7 +1,6 @@
 #include "mediampv.h"
 
 #include <clocale>
-#include <mpv/qthelper.hpp>
 
 #ifndef MEDIA_AUDIOONLY
 #include "mpvwidget.h"
