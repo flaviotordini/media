@@ -84,6 +84,7 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpv, 0, "volume", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpv, 0, "mute", MPV_FORMAT_FLAG);
+    mpv_observe_property(mpv, 0, "pause", MPV_FORMAT_FLAG);
 }
 
 // This slot is invoked by wakeup() (through the mpvEvents signal).
@@ -108,7 +109,7 @@ void MediaMPV::checkAboutToFinish(qint64 position) {
 }
 
 void MediaMPV::handleMpvEvent(mpv_event *event) {
-    // qDebug() << event->data;
+    // qDebug() << event->event_id << event->data;
     switch (event->event_id) {
     case MPV_EVENT_START_FILE:
         clearTrackState();
@@ -120,12 +121,18 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         setState(Media::BufferingState);
         break;
 
-    case MPV_EVENT_FILE_LOADED:
-        setState(Media::PlayingState);
+    case MPV_EVENT_PLAYBACK_RESTART: {
+        int pause;
+        mpv_get_property(mpv, "pause", MPV_FORMAT_FLAG, &pause);
+        bool paused = pause == 1;
+        if (paused)
+            setState(Media::PausedState);
+        else
+            setState(Media::PlayingState);
         break;
+    }
 
-    case MPV_EVENT_PLAYBACK_RESTART:
-    case MPV_EVENT_UNPAUSE:
+    case MPV_EVENT_FILE_LOADED:
         setState(Media::PlayingState);
         break;
 
@@ -140,13 +147,9 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
         break;
     }
 
-    case MPV_EVENT_PAUSE:
-        setState(Media::PausedState);
-        break;
-
     case MPV_EVENT_PROPERTY_CHANGE: {
         mpv_event_property *prop = (mpv_event_property *)event->data;
-        // qDebug() << prop->name << prop->data;
+        qDebug() << prop->name << prop->data;
 
         if (strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
@@ -168,6 +171,17 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
             if (prop->format == MPV_FORMAT_FLAG) {
                 int mute = *(int *)prop->data;
                 emit volumeMutedChanged(mute == 1);
+            }
+        }
+
+        else if (strcmp(prop->name, "pause") == 0) {
+            if (prop->format == MPV_FORMAT_FLAG) {
+                int pause = *(int *)prop->data;
+                bool paused = pause == 1;
+                if (paused)
+                    setState(Media::PausedState);
+                else
+                    setState(Media::PlayingState);
             }
         }
 
