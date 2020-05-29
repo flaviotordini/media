@@ -224,6 +224,7 @@ void MediaMPV::sendCommand(const char *args[]) {
 
 void MediaMPV::setState(Media::State value) {
     if (value != currentState) {
+        qDebug() << "State" << value;
         currentState = value;
         emit stateChanged(currentState);
     }
