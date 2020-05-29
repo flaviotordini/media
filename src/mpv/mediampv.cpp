@@ -180,8 +180,14 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
                 bool paused = pause == 1;
                 if (paused)
                     setState(Media::PausedState);
-                else
-                    setState(Media::PlayingState);
+                else {
+                    int coreIdle;
+                    mpv_get_property(mpv, "core-idle", MPV_FORMAT_FLAG, &coreIdle);
+                    if (coreIdle == 1)
+                        setState(Media::StoppedState);
+                    else
+                        setState(Media::PlayingState);
+                }
             }
         }
 
