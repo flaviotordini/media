@@ -3,7 +3,6 @@
 
 #include <QtWidgets>
 #include <mpv/client.h>
-#include <mpv/qthelper.hpp>
 #include <mpv/render_gl.h>
 
 class MpvWidget Q_DECL_FINAL : public QOpenGLWidget {
