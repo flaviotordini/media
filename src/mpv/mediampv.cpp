@@ -134,6 +134,14 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
     }
 
     case MPV_EVENT_FILE_LOADED:
+        // Add separate audiofile if there is any
+        if (!audioFileToAdd.isEmpty())
+        {
+            const QByteArray audioUtf8 = audioFileToAdd.toUtf8();
+            const char *args2[] = {"audio-add", audioUtf8.constData(), nullptr};
+            sendCommand(args2);
+            audioFileToAdd.clear();
+        }
         setState(Media::PlayingState);
         break;
 
@@ -258,12 +266,11 @@ void MediaMPV::playSeparateAudioAndVideo(const QString &video, const QString &au
     const char *args[] = {"loadfile", fileUtf8.constData(), nullptr};
     sendCommand(args);
 
+    // We are playing audio as separate file. The add audio command must executed when the main file is loaded
+    // Otherwise the audio file doesn't gets played
+    audioFileToAdd = audio;
+
     qApp->processEvents();
-
-    const QByteArray audioUtf8 = audio.toUtf8();
-    const char *args2[] = {"audio-add", audioUtf8.constData(), nullptr};
-    sendCommand(args2);
-
     clearTrackState();
 }
 
@@ -320,6 +327,8 @@ Media::State MediaMPV::state() const {
 }
 
 void MediaMPV::play(const QString &file) {
+    audioFileToAdd.clear();
+
     const QByteArray fileUtf8 = file.toUtf8();
     const char *args[] = {"loadfile", fileUtf8.constData(), nullptr};
     sendCommand(args);
@@ -366,6 +375,7 @@ void MediaMPV::setUserAgent(const QString &value) {
 }
 
 void MediaMPV::enqueue(const QString &file) {
+    audioFileToAdd.clear();
     const QByteArray fileUtf8 = file.toUtf8();
     const char *args[] = {"loadfile", fileUtf8.constData(), "append", nullptr};
     sendCommand(args);

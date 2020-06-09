@@ -59,6 +59,8 @@ private:
     Media::State currentState = Media::StoppedState;
     bool aboutToFinishEmitted = false;
     QString lastErrorString;
+
+    QString audioFileToAdd;
 };
 
 #endif // MEDIAMPV_H
