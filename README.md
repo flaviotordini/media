@@ -1,6 +1,10 @@
 # Qt Media Library Abstraction
 
-This is a simple wrapper around a multimedia playback library.
+This is a simple wrapper around a multimedia playback library. I use it in my apps at https://flavio.tordini.org
+
+The most interesting and maintained backend is MPV. It works great on macOS, Windows and Linux.
+
+I wrote this high level wrapper because I was not happy with Qt Multimedia and its lack of a common backend and guaranteed media format support across desktop platforms.
 
 Define `MEDIA_QTAV` to link to QtAV or `MEDIA_MPV` to link to libmpv (>=0.29.0).
 
