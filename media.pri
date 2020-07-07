@@ -7,8 +7,8 @@ contains(DEFINES, MEDIA_QTAV) {
     QT += avwidgets
     INCLUDEPATH += $$PWD/src/qtav
     DEPENDPATH += $$PWD/src/qtav
-    HEADERS += $$PWD/src/mediaqtav.h
-    SOURCES += $$PWD/src/mediaqtav.cpp
+    HEADERS += $$PWD/src/qtav/mediaqtav.h
+    SOURCES += $$PWD/src/qtav/mediaqtav.cpp
 }
 
 contains(DEFINES, MEDIA_MPV) {
