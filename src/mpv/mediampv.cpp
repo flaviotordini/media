@@ -158,7 +158,7 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
 
     case MPV_EVENT_PROPERTY_CHANGE: {
         mpv_event_property *prop = (mpv_event_property *)event->data;
-        qDebug() << prop->name << prop->data;
+        // qDebug() << prop->name << prop->data;
 
         if (strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
