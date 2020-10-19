@@ -360,8 +360,9 @@ void MediaMPV::seek(qint64 ms) {
 }
 
 QString MediaMPV::file() const {
-    char *path;
+    char *path = nullptr;
     mpv_get_property(mpv, "path", MPV_FORMAT_STRING, &path);
+    if (!path) return QString();
     return QString::fromUtf8(path);
 }
 
