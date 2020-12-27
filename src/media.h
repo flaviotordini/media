@@ -39,6 +39,7 @@ public:
     virtual void pause() = 0;
     virtual void stop() = 0;
     virtual void seek(qint64 ms) = 0;
+    virtual void relativeSeek(qint64 ms) = 0;
     virtual QString file() const = 0;
 
     virtual void setBufferMilliseconds(qint64 value) = 0;

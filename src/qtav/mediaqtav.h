@@ -30,6 +30,7 @@ public:
     void pause();
     void stop();
     void seek(qint64 ms);
+    void relativeSeek(qint64 ms);
     QString file() const;
 
     void setBufferMilliseconds(qint64 value);

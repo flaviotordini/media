@@ -263,6 +263,10 @@ void MediaQtAV::seek(qint64 ms) {
     currentPlayer->setPosition(ms);
 }
 
+void MediaQtAV::relativeSeek(qint64 ms) {
+    currentPlayer->setPosition(currentPlayer->position() + ms);
+}
+
 QtAV::AVPlayer *MediaQtAV::createPlayer(bool audioOnly) {
     QtAV::AVPlayer *p = new QtAV::AVPlayer(this);
 

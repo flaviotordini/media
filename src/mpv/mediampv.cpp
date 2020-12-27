@@ -359,6 +359,13 @@ void MediaMPV::seek(qint64 ms) {
     sendCommand(args);
 }
 
+void MediaMPV::relativeSeek(qint64 ms) {
+    double seconds = ms / 1000.;
+    QByteArray ba = QString::number(seconds).toUtf8();
+    const char *args[] = {"seek", ba.constData(), "relative", nullptr};
+    sendCommand(args);
+}
+
 QString MediaMPV::file() const {
     char *path = nullptr;
     mpv_get_property(mpv, "path", MPV_FORMAT_STRING, &path);
