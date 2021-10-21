@@ -86,6 +86,7 @@ MediaMPV::MediaMPV(QObject *parent) : Media(parent), widget(nullptr) {
     mpv_observe_property(mpv, 0, "volume", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpv, 0, "mute", MPV_FORMAT_FLAG);
     mpv_observe_property(mpv, 0, "pause", MPV_FORMAT_FLAG);
+    mpv_observe_property(mpv, 0, "paused-for-cache", MPV_FORMAT_FLAG);
 }
 
 // This slot is invoked by wakeup() (through the mpvEvents signal).
@@ -197,6 +198,13 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
                     else
                         setState(Media::PlayingState);
                 }
+            }
+        }
+
+        else if (strcmp(prop->name, "paused-for-cache") == 0) {
+            if (prop->format == MPV_FORMAT_FLAG) {
+                int pausedForCache = *(int *)prop->data;
+                setState(pausedForCache == 1 ? Media::BufferingState : Media::PlayingState);
             }
         }
 
