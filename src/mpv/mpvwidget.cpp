@@ -1,6 +1,9 @@
 #include "mpvwidget.h"
 #include <stdexcept>
 
+#include <QOpenGLContext>
+#include <QtCore>
+
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 #include <QtX11Extras/QX11Info>
 #endif

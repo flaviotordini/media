@@ -28,6 +28,7 @@ mac {
 
     !contains(DEFINES, MEDIA_AUDIOONLY) {
         QT *= widgets
+        greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets
         unix:!mac {
             QT *= x11extras
         }

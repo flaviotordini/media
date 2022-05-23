@@ -1,7 +1,8 @@
 #ifndef PLAYERWINDOW_H
 #define PLAYERWINDOW_H
 
-#include <QtWidgets>
+#include <QOpenGLWidget>
+
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
 
@@ -9,7 +10,7 @@ class MpvWidget Q_DECL_FINAL : public QOpenGLWidget {
     Q_OBJECT
 
 public:
-    MpvWidget(mpv_handle *mpv, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr);
+    MpvWidget(mpv_handle *mpv, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::Widget);
     ~MpvWidget() Q_DECL_OVERRIDE;
 
     QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(480, 270); }
