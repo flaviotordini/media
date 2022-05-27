@@ -5,6 +5,7 @@
 #include <QtCore>
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+#include <QGuiApplication>
 #include <QtX11Extras/QX11Info>
 #endif
 
