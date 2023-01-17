@@ -50,8 +50,8 @@ void MpvWidget::initializeGL() {
     bool isPlatformX11 = false;
     bool isPlatformWayland = false;
     #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        int *display = QX11Info::display();
-        isPlatformX11 = QX11Info::isPlatformX11();
+    Display *display = QX11Info::display();
+    isPlatformX11 = QX11Info::isPlatformX11();
     #else
         Display *display = nullptr;
         if (auto *ni = qGuiApp->nativeInterface<QNativeInterface::QX11Application>()) {
