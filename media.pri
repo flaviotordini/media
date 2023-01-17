@@ -30,7 +30,7 @@ mac {
         QT *= widgets
         greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets
         unix:!mac {
-            QT *= x11extras
+            lessThan(QT_MAJOR_VERSION, 6): QT *= x11extras
         }
         HEADERS += $$PWD/src/mpv/mpvwidget.h
         SOURCES += $$PWD/src/mpv/mpvwidget.cpp
