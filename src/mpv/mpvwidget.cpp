@@ -6,7 +6,9 @@
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 #include <QGuiApplication>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtX11Extras/QX11Info>
+#endif
 #endif
 
 static void *get_proc_address(void *ctx, const char *name) {
@@ -45,13 +47,30 @@ void MpvWidget::initializeGL() {
                               {MPV_RENDER_PARAM_INVALID, nullptr}};
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
-    const QString platformName = QGuiApplication::platformName();
-    if (platformName.contains("xcb")) {
+    bool isPlatformX11 = false;
+    bool isPlatformWayland = false;
+    #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        int *display = QX11Info::display();
+        isPlatformX11 = QX11Info::isPlatformX11();
+    #else
+        Display *display = nullptr;
+        if (auto *ni = qGuiApp->nativeInterface<QNativeInterface::QX11Application>()) {
+            display = ni->display();
+            isPlatformX11 = true;
+        }
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+        else if (auto *ni = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>()) {
+            display = ni->display();
+            isPlatformWayland = true;
+        }
+    #endif
+    #endif
+    if (isPlatformX11) {
         params[2].type = MPV_RENDER_PARAM_X11_DISPLAY;
-        params[2].data = (void *)QX11Info::display();
-        qDebug() << platformName << params[2].data;
-    } else if (platformName.contains("wayland")) {
-        qWarning() << "Wayland not supported";
+        params[2].data = (void *)display;
+    } else if (isPlatformWayland) {
+        params[2].type = MPV_RENDER_PARAM_WL_DISPLAY;
+        params[2].data = (void *)display;
     }
 #endif
 
