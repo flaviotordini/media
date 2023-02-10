@@ -36,3 +36,12 @@ mac {
         SOURCES += $$PWD/src/mpv/mpvwidget.cpp
     }
 }
+
+contains(DEFINES, MEDIA_QT) {
+    QT *= multimedia
+    !contains(DEFINES, MEDIA_AUDIOONLY): QT *= multimediawidgets
+    INCLUDEPATH += $$PWD/src/qt
+    DEPENDPATH += $$PWD/src/qt
+    HEADERS += $$PWD/src/qt/mediaqt.h
+    SOURCES += $$PWD/src/qt/mediaqt.cpp
+}
