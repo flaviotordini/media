@@ -126,11 +126,14 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
     case MPV_EVENT_PLAYBACK_RESTART: {
         int pause;
         mpv_get_property(mpv, "pause", MPV_FORMAT_FLAG, &pause);
-        bool paused = pause == 1;
-        if (paused)
+        bool isPaused = pause == 1;
+        if (isPaused) {
             setState(Media::PausedState);
-        else
+            emit paused(true);
+        } else {
             setState(Media::PlayingState);
+            emit started();
+        }
         break;
     }
 
@@ -144,6 +147,8 @@ void MediaMPV::handleMpvEvent(mpv_event *event) {
             audioFileToAdd.clear();
         }
         setState(Media::PlayingState);
+        emit loaded();
+        emit started();
         break;
 
     case MPV_EVENT_END_FILE: {
