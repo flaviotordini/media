@@ -1,12 +1,10 @@
 INCLUDEPATH += $$PWD/src
-DEPENDPATH += $$PWD/src
 
 HEADERS += $$PWD/src/media.h
 
 contains(DEFINES, MEDIA_QTAV) {
     QT += avwidgets
     INCLUDEPATH += $$PWD/src/qtav
-    DEPENDPATH += $$PWD/src/qtav
     HEADERS += $$PWD/src/qtav/mediaqtav.h
     SOURCES += $$PWD/src/qtav/mediaqtav.cpp
 }
@@ -22,7 +20,6 @@ mac {
 }
 
     INCLUDEPATH += $$PWD/src/mpv
-    DEPENDPATH += $$PWD/src/mpv
     HEADERS += $$PWD/src/mpv/mediampv.h
     SOURCES += $$PWD/src/mpv/mediampv.cpp
 
@@ -41,7 +38,6 @@ contains(DEFINES, MEDIA_QT) {
     QT *= multimedia
     !contains(DEFINES, MEDIA_AUDIOONLY): QT *= multimediawidgets
     INCLUDEPATH += $$PWD/src/qt
-    DEPENDPATH += $$PWD/src/qt
     HEADERS += $$PWD/src/qt/mediaqt.h
     SOURCES += $$PWD/src/qt/mediaqt.cpp
 }
